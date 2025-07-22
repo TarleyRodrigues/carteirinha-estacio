@@ -1,4 +1,3 @@
-# Importações de bibliotecas padrão e de terceiros
 import os
 from flask import Blueprint, render_template, url_for, request, flash, redirect, session, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -15,12 +14,10 @@ from app.forms import (
     LogoUploadForm
 )
 
-
-
 bp = Blueprint('main', __name__)
 
-# Rota de Login
-@bp.route('/')
+# Rota de Login (CORRIGIDA)
+@bp.route('/', methods=['GET', 'POST'])
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -128,12 +125,12 @@ def upload_foto_perfil():
         nome_seguro = secure_filename(f"{aluno.id}_{foto.filename}")
         caminho_base = os.path.join(current_app.root_path, 'static', 'uploads')
         
-        os.makedirs(caminho_base, exist_ok=True) # Garante que a pasta exista
+        os.makedirs(caminho_base, exist_ok=True)
         
         caminho_foto = os.path.join(caminho_base, nome_seguro)
         foto.save(caminho_foto)
         
-        aluno.foto_url = f"/static/uploads/{nome_seguro}" # Salva o caminho relativo no banco
+        aluno.foto_url = f"/static/uploads/{nome_seguro}"
         db.session.commit()
         
         flash('Sua foto de perfil foi atualizada!', 'success')
@@ -169,11 +166,9 @@ def cadastro_estudante():
 
     return render_template('admin/cadastro_estudante.html', title='Cadastro de Estudante', form=form)
 
-# em app/routes.py
-
+# Rota para Upload do Logo (Admin)
 @bp.route('/admin/upload-logo', methods=['GET', 'POST'])
 def upload_logo():
-    # Proteção: Garante que apenas o admin acesse
     if 'aluno_id' not in session:
         return redirect(url_for('main.login'))
     user_logado = Aluno.query.get(session['aluno_id'])
@@ -184,17 +179,39 @@ def upload_logo():
     form = LogoUploadForm()
     if form.validate_on_submit():
         logo_file = form.logo.data
-        # Usamos um nome de arquivo FIXO
         filename = 'logo_faculdade.png'
         save_path = os.path.join(current_app.root_path, 'static', 'img', filename)
-
-        # Salva o novo logo, substituindo o antigo se existir
+        
         logo_file.save(save_path)
-
+        
         flash('Logo da faculdade atualizado com sucesso!', 'success')
         return redirect(url_for('main.menu'))
 
     return render_template('admin/upload_logo.html', title='Alterar Logo da Faculdade', form=form)
+
+# Rota de Setup (Temporária)
+@bp.route('/setup-database/a-very-long-and-random-secret-key-12345')
+def setup_database():
+    try:
+        db.create_all()
+        admin_existente = Aluno.query.filter_by(matricula='admin').first()
+        if not admin_existente:
+            senha_hashed = generate_password_hash('senha_super_segura', method='pbkdf2:sha256')
+            usuario_admin = Aluno(
+                nome='Admin Render', 
+                cpf='111.111.111-11', 
+                data_nascimento='01/01/1990', 
+                matricula='admin', 
+                senha_hash=senha_hashed, 
+                is_admin=True
+            )
+            db.session.add(usuario_admin)
+            db.session.commit()
+            return "Banco de dados e usuário admin criados com sucesso!"
+        
+        return "Banco de dados verificado. Admin já existe."
+    except Exception as e:
+        return f"Ocorreu um erro: {str(e)}"
 
 # Rota de Logout
 @bp.route('/logout')
@@ -202,7 +219,6 @@ def logout():
     session.pop('aluno_id', None)
     flash('Você saiu do sistema.', 'info')
     return redirect(url_for('main.login'))
-
 # Rota para configurar o banco de dados (apenas para uso inicial)
 
 @bp.route('/setup-database/a-very-long-and-random-secret-key-12345')
