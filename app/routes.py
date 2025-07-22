@@ -3,6 +3,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app import db  
 from app.models import Aluno
 from app.forms import CadastroForm
+from app.forms import CadastroForm, EditarPerfilForm
+
 
 bp = Blueprint('main', __name__)
 
@@ -105,6 +107,32 @@ def perfil():
     # 3. Renderiza o novo template 'perfil.html', enviando os dados do aluno
     return render_template('perfil.html', title='Meu Perfil', aluno=aluno_logado)
 
+@bp.route('/perfil/editar', methods=['GET', 'POST'])
+def editar_perfil():
+    # Proteção: Garante que o usuário esteja logado
+    if 'aluno_id' not in session:
+        flash('Você precisa fazer login para acessar esta página.', 'warning')
+        return redirect(url_for('main.login'))
+
+    aluno = Aluno.query.get_or_404(session['aluno_id'])
+    form = EditarPerfilForm()
+
+    # Se o formulário for enviado e validado
+    if form.validate_on_submit():
+        aluno.nome = form.nome.data
+        aluno.cpf = form.cpf.data
+        aluno.data_nascimento = form.data_nascimento.data
+        db.session.commit() # Salva as alterações no banco
+        flash('Seu perfil foi atualizado com sucesso!', 'success')
+        return redirect(url_for('main.perfil'))
+
+    # Se for o primeiro acesso à página (GET), preenche o formulário com os dados atuais
+    elif request.method == 'GET':
+        form.nome.data = aluno.nome
+        form.cpf.data = aluno.cpf
+        form.data_nascimento.data = aluno.data_nascimento
+
+    return render_template('editar_perfil.html', title='Editar Perfil', form=form)
 
 @bp.route('/logout')
 def logout():

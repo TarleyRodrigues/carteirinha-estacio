@@ -12,3 +12,9 @@ class CadastroForm(FlaskForm):
     senha = PasswordField('Senha', validators=[DataRequired(), Length(min=6)])
     confirmar_senha = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('senha')])
     submit = SubmitField('Cadastrar Aluno')
+
+class EditarPerfilForm(FlaskForm):
+    nome = StringField('Nome Completo', validators=[DataRequired()])
+    cpf = StringField('CPF', validators=[DataRequired(), Length(min=14, max=14)])
+    data_nascimento = StringField('Data de Nascimento (DD/MM/AAAA)', validators=[DataRequired()])
+    submit = SubmitField('Salvar Alterações')    
