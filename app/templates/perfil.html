@@ -29,8 +29,9 @@
             <p><strong>Data de Nascimento:</strong> {{ aluno.data_nascimento }}</p>
         </div>
         <div class="profile-actions">
-            <a href="{{ url_for('main.editar_perfil') }}" class="btn btn-secondary">Editar Perfil</a>
             <a href="#" class="btn btn-secondary">Alterar Senha</a>
+            <a href="{{ url_for('main.alterar_senha') }}" class="btn btn-secondary">Alterar Senha</a>
+
         </div>
     </div>
     <div class="back-link">

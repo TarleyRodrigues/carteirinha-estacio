@@ -4,6 +4,7 @@ from app import db
 from app.models import Aluno
 from app.forms import CadastroForm
 from app.forms import CadastroForm, EditarPerfilForm
+from app.forms import CadastroForm, EditarPerfilForm, AlterarSenhaForm # <-- ADICIONE AlterarSenhaForm
 
 
 bp = Blueprint('main', __name__)
@@ -133,6 +134,31 @@ def editar_perfil():
         form.data_nascimento.data = aluno.data_nascimento
 
     return render_template('editar_perfil.html', title='Editar Perfil', form=form)
+
+@bp.route('/perfil/alterar-senha', methods=['GET', 'POST'])
+def alterar_senha():
+    # Proteção: Garante que o usuário esteja logado
+    if 'aluno_id' not in session:
+        flash('Você precisa fazer login para acessar esta página.', 'warning')
+        return redirect(url_for('main.login'))
+
+    aluno = Aluno.query.get_or_404(session['aluno_id'])
+    form = AlterarSenhaForm()
+
+    if form.validate_on_submit():
+        # 1. VERIFICA SE A SENHA ATUAL ESTÁ CORRETA
+        if check_password_hash(aluno.senha_hash, form.senha_atual.data):
+            # 2. Se estiver correta, atualiza para a nova senha
+            nova_senha_hashed = generate_password_hash(form.nova_senha.data, method='pbkdf2:sha256')
+            aluno.senha_hash = nova_senha_hashed
+            db.session.commit()
+            flash('Sua senha foi alterada com sucesso!', 'success')
+            return redirect(url_for('main.perfil'))
+        else:
+            # 3. Se a senha atual estiver incorreta, exibe um erro
+            flash('A senha atual está incorreta. Tente novamente.', 'danger')
+
+    return render_template('alterar_senha.html', title='Alterar Senha', form=form)
 
 @bp.route('/logout')
 def logout():
