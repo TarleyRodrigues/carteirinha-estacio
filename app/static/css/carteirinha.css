@@ -1,0 +1,81 @@
+.carteirinha-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.carteirinha {
+    background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+    color: var(--white);
+    padding: 1.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 54, 96, 0.3);
+    width: 100%;
+    max-width: 400px;
+}
+
+.carteirinha-header {
+    text-align: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.carteirinha-header .logo-carteirinha {
+    max-width: 120px;
+    margin-bottom: 0.5rem;
+}
+
+.carteirinha-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+@media (min-width: 400px) {
+    .carteirinha-body {
+        flex-direction: row;
+        text-align: left;
+    }
+}
+
+.foto-perfil {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid var(--white);
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.foto-perfil img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dados-aluno p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+}
+
+.dados-aluno strong {
+    font-weight: 500;
+}
+
+.carteirinha-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.btn-voltar {
+    background-color: var(--text-color);
+}

@@ -13,7 +13,7 @@
 
     <div class="menu-options">
         <a href="{{ url_for('main.carteirinha') }}" class="menu-option">Carteirinha Estudantil</a>
-        <a href="#" class="menu-option">Meu Perfil</a>
+        <a href="{{ url_for('main.perfil') }}" class="menu-option">Meu Perfil</a>
         <a href="#" class="menu-option">Iniciação Científica</a>
 
         {% if aluno.is_admin %}

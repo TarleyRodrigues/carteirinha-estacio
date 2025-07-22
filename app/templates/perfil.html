@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>Meu Perfil</h2>
+    <div class="profile-card">
+        <div class="profile-picture-large">
+            <img src="{{ aluno.foto_url or url_for('static', filename='img/placeholder-foto.png') }}" alt="Foto de Perfil">
+        </div>
+        <div class="profile-details">
+            <p><strong>Nome Completo:</strong> {{ aluno.nome }}</p>
+            <p><strong>Matrícula:</strong> {{ aluno.matricula }}</p>
+            <p><strong>CPF:</strong> {{ aluno.cpf }}</p>
+            <p><strong>Data de Nascimento:</strong> {{ aluno.data_nascimento }}</p>
+        </div>
+        <div class="profile-actions">
+            <a href="#" class="btn btn-secondary">Editar Perfil</a>
+            <a href="#" class="btn btn-secondary">Alterar Senha</a>
+        </div>
+    </div>
+    <div class="back-link">
+        <a href="{{ url_for('main.menu') }}">Voltar ao Menu</a>
+    </div>
+</div>
+{% endblock %}

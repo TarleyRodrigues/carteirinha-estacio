@@ -1,0 +1,58 @@
+/* Container para Login, Cadastro, etc. */
+.form-container,
+.login-container {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.login-container .logo,
+.form-container .logo {
+    max-width: 180px;
+    margin-bottom: 1.5rem;
+}
+
+.form-container h2,
+.login-container h2 {
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-blue);
+}
+
+/* Grupos de Formulário (Label + Input) */
+.form-group {
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.2);
+}
+
+.form-container .btn,
+.login-container .btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+}

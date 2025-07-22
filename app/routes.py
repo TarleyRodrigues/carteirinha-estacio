@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, url_for, request, flash, redirect, session
 from werkzeug.security import check_password_hash, generate_password_hash
-from app import db  # <-- ADICIONE ESTA LINHA
+from app import db  
 from app.models import Aluno
 from app.forms import CadastroForm
 
@@ -91,6 +91,20 @@ def cadastro_estudante():
 
     # 3. Se for um acesso GET, apenas exibe a página com o formulário
     return render_template('admin/cadastro_estudante.html', title='Cadastro de Estudante', form=form)
+
+@bp.route('/perfil')
+def perfil():
+    # 1. Proteção: Garante que apenas usuários logados acessem
+    if 'aluno_id' not in session:
+        flash('Você precisa fazer login para acessar esta página.', 'warning')
+        return redirect(url_for('main.login'))
+
+    # 2. Busca os dados do aluno logado no banco de dados
+    aluno_logado = Aluno.query.get(session['aluno_id'])
+
+    # 3. Renderiza o novo template 'perfil.html', enviando os dados do aluno
+    return render_template('perfil.html', title='Meu Perfil', aluno=aluno_logado)
+
 
 @bp.route('/logout')
 def logout():
