@@ -192,7 +192,7 @@ def setup_database():
         db.create_all()
         admin_existente = Aluno.query.filter_by(matricula='admin').first()
         if not admin_existente:
-            senha_hashed = generate_password_hash('senha_super_segura', method='pbkdf2:sha256')
+            senha_hashed = generate_password_hash('Mudar@123', method='pbkdf2:sha256')
             usuario_admin = Aluno(nome='Admin Render', cpf='111.111.111-11', data_nascimento='01/01/1990', matricula='admin', senha_hash=senha_hashed, is_admin=True)
             db.session.add(usuario_admin)
             db.session.commit()
