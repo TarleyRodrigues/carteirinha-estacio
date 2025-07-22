@@ -33,3 +33,10 @@ class FotoPerfilForm(FlaskForm):
         FileAllowed(['jpg', 'jpeg', 'png'], 'Apenas imagens do tipo JPG, JPEG e PNG são permitidas.')
     ])
     submit = SubmitField('Salvar Foto')
+
+class LogoUploadForm(FlaskForm):
+    logo = FileField('Selecionar Novo Logo', validators=[
+        FileRequired(),
+        FileAllowed(['png', 'jpg', 'jpeg', 'svg'], 'Apenas imagens (PNG, JPG, SVG) são permitidas.')
+    ])
+    submit = SubmitField('Atualizar Logo')    

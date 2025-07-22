@@ -6,7 +6,9 @@
 
 {% block content %}
     <div class="login-container">
-        <img src="{{ url_for('static', filename='img/logo-estacio.png') }}" alt="Logo Estácio" class="logo">
+        <img src="{{ url_for('static', filename='img/logo_faculdade.png') }}" 
+            onerror="this.onerror=null; this.src='{{ url_for('static', filename='img/logo_default.png') }}'" 
+            alt="Logo Estácio" class="logo">
         <h2>Acessar Portal</h2>
 
         {% with messages = get_flashed_messages(with_categories=true) %}

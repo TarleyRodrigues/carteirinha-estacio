@@ -11,8 +11,11 @@ from app.forms import (
     CadastroForm, 
     EditarPerfilForm, 
     AlterarSenhaForm, 
-    FotoPerfilForm
+    FotoPerfilForm,
+    LogoUploadForm
 )
+
+
 
 bp = Blueprint('main', __name__)
 
@@ -165,6 +168,33 @@ def cadastro_estudante():
         return redirect(url_for('main.menu'))
 
     return render_template('admin/cadastro_estudante.html', title='Cadastro de Estudante', form=form)
+
+# em app/routes.py
+
+@bp.route('/admin/upload-logo', methods=['GET', 'POST'])
+def upload_logo():
+    # Proteção: Garante que apenas o admin acesse
+    if 'aluno_id' not in session:
+        return redirect(url_for('main.login'))
+    user_logado = Aluno.query.get(session['aluno_id'])
+    if not user_logado or not user_logado.is_admin:
+        flash('Acesso negado.', 'danger')
+        return redirect(url_for('main.menu'))
+
+    form = LogoUploadForm()
+    if form.validate_on_submit():
+        logo_file = form.logo.data
+        # Usamos um nome de arquivo FIXO
+        filename = 'logo_faculdade.png'
+        save_path = os.path.join(current_app.root_path, 'static', 'img', filename)
+
+        # Salva o novo logo, substituindo o antigo se existir
+        logo_file.save(save_path)
+
+        flash('Logo da faculdade atualizado com sucesso!', 'success')
+        return redirect(url_for('main.menu'))
+
+    return render_template('admin/upload_logo.html', title='Alterar Logo da Faculdade', form=form)
 
 # Rota de Logout
 @bp.route('/logout')

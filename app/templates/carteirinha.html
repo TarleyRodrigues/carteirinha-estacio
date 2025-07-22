@@ -8,7 +8,9 @@
 <div class="carteirinha-container">
     <div class="carteirinha">
         <div class="carteirinha-header">
-            <img src="{{ url_for('static', filename='img/logo-estacio.png') }}" alt="Logo Estácio" class="logo-carteirinha">
+            <img src="{{ url_for('static', filename='img/logo_faculdade.png') }}" 
+                onerror="this.onerror=null; this.src='{{ url_for('static', filename='img/logo_default.png') }}'" 
+                alt="Logo Estácio" class="logo-carteirinha">
             <h4>Nome da Faculdade: Estácio</h4>
         </div>
         <div class="carteirinha-body">
