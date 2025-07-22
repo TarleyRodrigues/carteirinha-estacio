@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <img src="{{ url_for('static', filename='img/logo_faculdade.png') }}" 
+         onerror="this.onerror=null; this.src='{{ url_for('static', filename='img/logo_default.png') }}'" 
+         alt="Logo Estácio" class="logo">
+    
+    <h1>Bem-vindo ao Portal do Aluno</h1>
+    <p>Acesse sua carteirinha, perfil e muito mais.</p>
+    
+    <a href="{{ url_for('main.login') }}" class="btn btn-large">Fazer Login</a>
+</div>
+{% endblock %}

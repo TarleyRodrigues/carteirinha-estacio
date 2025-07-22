@@ -16,10 +16,13 @@ from app.forms import (
 
 bp = Blueprint('main', __name__)
 
-# Rota de Login (CORRIGIDA)
-@bp.route('/', methods=['GET', 'POST'])
+# Rota de Login ()
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    # Se o usuário já estiver logado, redireciona para o menu
+    if 'aluno_id' in session:
+        return redirect(url_for('main.menu'))
+        
     if request.method == 'POST':
         matricula = request.form.get('matricula')
         senha = request.form.get('senha')
@@ -31,7 +34,16 @@ def login():
             return redirect(url_for('main.menu'))
         else:
             flash('Matrícula ou senha inválida. Tente novamente.', 'danger')
+    
     return render_template('login.html', title='Login')
+
+@bp.route('/')
+def home():
+    # Se o usuário já estiver logado, redireciona direto para o menu
+    if 'aluno_id' in session:
+        return redirect(url_for('main.menu'))
+    # Se não, mostra a nova página de boas-vindas
+    return render_template('home.html', title='Bem-vindo')
 
 # Rota do Menu Principal
 @bp.route('/menu')

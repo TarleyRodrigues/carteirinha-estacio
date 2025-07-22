@@ -1,0 +1,45 @@
+.home-container {
+    background-color: var(--white);
+    padding: 3rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.home-container .logo {
+    max-width: 200px;
+    margin-bottom: 2rem;
+}
+
+.home-container h1 {
+    font-size: 2rem;
+    color: var(--dark-blue);
+    margin-bottom: 0.5rem;
+}
+
+.home-container p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+}
+
+.btn-large {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
