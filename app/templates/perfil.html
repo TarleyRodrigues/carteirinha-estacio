@@ -8,10 +8,11 @@
 <div class="profile-container">
     <h2>Meu Perfil</h2>
 
+    <!-- Bloco para exibir mensagens de sucesso/erro -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
+                <div class="alert alert-{{ category }}" style="margin-bottom: 1.5rem;">
                     {{ message }}
                 </div>
             {% endfor %}
@@ -29,9 +30,9 @@
             <p><strong>Data de Nascimento:</strong> {{ aluno.data_nascimento }}</p>
         </div>
         <div class="profile-actions">
-            <a href="#" class="btn btn-secondary">Alterar Senha</a>
+            <a href="{{ url_for('main.editar_perfil') }}" class="btn btn-secondary">Editar Dados</a>
             <a href="{{ url_for('main.alterar_senha') }}" class="btn btn-secondary">Alterar Senha</a>
-
+            <a href="{{ url_for('main.upload_foto_perfil') }}" class="btn btn-secondary">Alterar Foto</a>
         </div>
     </div>
     <div class="back-link">

@@ -9,6 +9,7 @@ class Aluno(db.Model):
     matricula = db.Column(db.String(20), unique=True, nullable=False)
     senha_hash = db.Column(db.String(128))  # Nunca guarde a senha em texto!
     is_admin = db.Column(db.Boolean, default=False)
+    foto_url = db.Column(db.String(255))
     # Adicione outros campos se necessário
 
     def __repr__(self):

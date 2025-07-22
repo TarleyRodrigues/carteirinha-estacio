@@ -1,6 +1,5 @@
-# em app/forms.py
-
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Length, EqualTo
 
@@ -26,4 +25,11 @@ class AlterarSenhaForm(FlaskForm):
         'Confirmar Nova Senha', 
         validators=[DataRequired(), EqualTo('nova_senha', message='As senhas não coincidem.')]
     )
-    submit = SubmitField('Alterar Senha')        
+    submit = SubmitField('Alterar Senha')
+
+class FotoPerfilForm(FlaskForm):
+    foto = FileField('Selecionar Nova Foto de Perfil', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'jpeg', 'png'], 'Apenas imagens do tipo JPG, JPEG e PNG são permitidas.')
+    ])
+    submit = SubmitField('Salvar Foto')
