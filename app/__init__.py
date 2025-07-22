@@ -1,10 +1,14 @@
+# app/__init__.py
 from app.routes import bp
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy  # Adicionar import
 
-# Cria a instância da aplicação principal
 app = Flask(__name__)
+# Adicionar configuração do BD
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+# Necessário para sessões e formulários
+app.config['SECRET_KEY'] = 'uma-chave-secreta-muito-dificil'
 
-# Importa o blueprint do nosso arquivo de rotas
+db = SQLAlchemy(app)  # Inicializar o BD
 
-# Registra o blueprint na aplicação. Agora a 'app' conhece todas as rotas de 'bp'.
 app.register_blueprint(bp)
