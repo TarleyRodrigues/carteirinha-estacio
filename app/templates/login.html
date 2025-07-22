@@ -1,36 +1,39 @@
 {% extends "base.html" %}
 
 {% block page_css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
 {% endblock %}
 
 {% block content %}
-    <div class="login-container">
-        <img src="{{ url_for('static', filename='img/logo_faculdade.png') }}" 
-            onerror="this.onerror=null; this.src='{{ url_for('static', filename='img/logo_default.png') }}'" 
-            alt="Logo Estácio" class="logo">
-        <h2>Acessar Portal</h2>
+<div class="login-container">
+    <img src="{{ url_for('static', filename='img/logo_faculdade.png') }}" 
+         onerror="this.onerror=null; this.src='{{ url_for('static', filename='img/logo_default.png') }}'" 
+         alt="Logo Estácio" class="logo">
+    <h2>Acessar Portal</h2>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <!-- Bloco para exibir mensagens de erro/sucesso -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-        <form method="POST" action="">
-            <div class="input-group">
-                <label for="matricula">Matrícula</label>
-                <input type="text" id="matricula" name="matricula" required>
-            </div>
-            <div class="input-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required>
-            </div>
-            <button type="submit" class="btn">Entrar</button>
-        </form>
-    </div>
+    <!-- O formulário que envia os dados para a rota de login -->
+    <!-- CORREÇÃO AQUI: action aponta para a rota 'main.login' -->
+    <form method="POST" action="{{ url_for('main.login') }}">
+        <div class="input-group">
+            <label for="matricula">Matrícula</label>
+            <input type="text" id="matricula" name="matricula" required>
+        </div>
+        <div class="input-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" required>
+        </div>
+        <button type="submit" class="btn">Entrar</button>
+    </form>
+</div>
 {% endblock %}
