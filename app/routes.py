@@ -202,3 +202,34 @@ def logout():
     session.pop('aluno_id', None)
     flash('Você saiu do sistema.', 'info')
     return redirect(url_for('main.login'))
+
+# Rota para configurar o banco de dados (apenas para uso inicial)
+
+@bp.route('/setup-database/a-very-long-and-random-secret-key-12345')
+def setup_database():
+    try:
+        # Comando 1: Criar todas as tabelas
+        db.create_all()
+
+        # Comando 2: Criar o usuário admin, mas só se ele não existir
+        admin_existente = Aluno.query.filter_by(matricula='admin').first()
+        if not admin_existente:
+            senha_hashed = generate_password_hash('senha_super_segura', method='pbkdf2:sha256')
+            usuario_admin = Aluno(
+                nome='Admin Render', 
+                cpf='111.111.111-11', 
+                data_nascimento='01/01/1990', 
+                matricula='admin', 
+                senha_hash=senha_hashed, 
+                is_admin=True
+            )
+            db.session.add(usuario_admin)
+            db.session.commit()
+            return "Banco de dados e usuário admin criados com sucesso!"
+
+        return "Banco de dados verificado. Admin já existe."
+
+    except Exception as e:
+        return f"Ocorreu um erro: {str(e)}"
+
+# ... (sua rota de logout aqui)
