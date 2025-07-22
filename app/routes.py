@@ -1,3 +1,4 @@
+# Importações de bibliotecas padrão e de terceiros
 import os
 from flask import Blueprint, render_template, url_for, request, flash, redirect, session, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -16,10 +17,16 @@ from app.forms import (
 
 bp = Blueprint('main', __name__)
 
-# Rota de Login ()
+# Rota Home
+@bp.route('/')
+def home():
+    if 'aluno_id' in session:
+        return redirect(url_for('main.menu'))
+    return render_template('home.html', title='Bem-vindo')
+
+# Rota de Login
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-    # Se o usuário já estiver logado, redireciona para o menu
     if 'aluno_id' in session:
         return redirect(url_for('main.menu'))
         
@@ -37,26 +44,13 @@ def login():
     
     return render_template('login.html', title='Login')
 
-@bp.route('/')
-def home():
-    # Se o usuário já estiver logado, redireciona direto para o menu
-    if 'aluno_id' in session:
-        return redirect(url_for('main.menu'))
-    # Se não, mostra a nova página de boas-vindas
-    return render_template('home.html', title='Bem-vindo')
-
 # Rota do Menu Principal
 @bp.route('/menu')
 def menu():
     if 'aluno_id' not in session:
-        flash('Você precisa fazer login para acessar esta página.', 'warning')
         return redirect(url_for('main.login'))
     
-    aluno_logado = Aluno.query.get(session['aluno_id'])
-    if not aluno_logado:
-        session.pop('aluno_id', None)
-        return redirect(url_for('main.login'))
-
+    aluno_logado = Aluno.query.get_or_404(session['aluno_id'])
     return render_template('menu.html', title='Menu Principal', aluno=aluno_logado)
 
 # Rota da Carteirinha Estudantil
@@ -65,17 +59,16 @@ def carteirinha():
     if 'aluno_id' not in session:
         return redirect(url_for('main.login'))
     
-    aluno_logado = Aluno.query.get(session['aluno_id'])
+    aluno_logado = Aluno.query.get_or_404(session['aluno_id'])
     return render_template('carteirinha.html', title='Carteirinha Estudantil', aluno=aluno_logado)
 
 # Rota para ver o Perfil
 @bp.route('/perfil')
 def perfil():
     if 'aluno_id' not in session:
-        flash('Você precisa fazer login para acessar esta página.', 'warning')
         return redirect(url_for('main.login'))
 
-    aluno_logado = Aluno.query.get(session['aluno_id'])
+    aluno_logado = Aluno.query.get_or_404(session['aluno_id'])
     return render_template('perfil.html', title='Meu Perfil', aluno=aluno_logado)
 
 # Rota para Editar o Perfil
@@ -138,7 +131,6 @@ def upload_foto_perfil():
         caminho_base = os.path.join(current_app.root_path, 'static', 'uploads')
         
         os.makedirs(caminho_base, exist_ok=True)
-        
         caminho_foto = os.path.join(caminho_base, nome_seguro)
         foto.save(caminho_foto)
         
@@ -156,21 +148,15 @@ def cadastro_estudante():
     if 'aluno_id' not in session:
         return redirect(url_for('main.login'))
 
-    user_logado = Aluno.query.get(session['aluno_id'])
-    if not user_logado or not user_logado.is_admin:
-        flash('Acesso negado. Você não tem permissão para acessar esta página.', 'danger')
+    user_logado = Aluno.query.get_or_404(session['aluno_id'])
+    if not user_logado.is_admin:
+        flash('Acesso negado.', 'danger')
         return redirect(url_for('main.menu'))
 
     form = CadastroForm()
     if form.validate_on_submit():
         senha_hashed = generate_password_hash(form.senha.data, method='pbkdf2:sha256')
-        novo_aluno = Aluno(
-            nome=form.nome.data,
-            cpf=form.cpf.data,
-            data_nascimento=form.data_nascimento.data,
-            matricula=form.matricula.data,
-            senha_hash=senha_hashed
-        )
+        novo_aluno = Aluno(nome=form.nome.data, cpf=form.cpf.data, data_nascimento=form.data_nascimento.data, matricula=form.matricula.data, senha_hash=senha_hashed)
         db.session.add(novo_aluno)
         db.session.commit()
         flash(f'Aluno {form.nome.data} cadastrado com sucesso!', 'success')
@@ -183,8 +169,8 @@ def cadastro_estudante():
 def upload_logo():
     if 'aluno_id' not in session:
         return redirect(url_for('main.login'))
-    user_logado = Aluno.query.get(session['aluno_id'])
-    if not user_logado or not user_logado.is_admin:
+    user_logado = Aluno.query.get_or_404(session['aluno_id'])
+    if not user_logado.is_admin:
         flash('Acesso negado.', 'danger')
         return redirect(url_for('main.menu'))
 
@@ -193,9 +179,7 @@ def upload_logo():
         logo_file = form.logo.data
         filename = 'logo_faculdade.png'
         save_path = os.path.join(current_app.root_path, 'static', 'img', filename)
-        
         logo_file.save(save_path)
-        
         flash('Logo da faculdade atualizado com sucesso!', 'success')
         return redirect(url_for('main.menu'))
 
@@ -209,14 +193,7 @@ def setup_database():
         admin_existente = Aluno.query.filter_by(matricula='admin').first()
         if not admin_existente:
             senha_hashed = generate_password_hash('senha_super_segura', method='pbkdf2:sha256')
-            usuario_admin = Aluno(
-                nome='Admin Render', 
-                cpf='111.111.111-11', 
-                data_nascimento='01/01/1990', 
-                matricula='admin', 
-                senha_hash=senha_hashed, 
-                is_admin=True
-            )
+            usuario_admin = Aluno(nome='Admin Render', cpf='111.111.111-11', data_nascimento='01/01/1990', matricula='admin', senha_hash=senha_hashed, is_admin=True)
             db.session.add(usuario_admin)
             db.session.commit()
             return "Banco de dados e usuário admin criados com sucesso!"
@@ -231,33 +208,3 @@ def logout():
     session.pop('aluno_id', None)
     flash('Você saiu do sistema.', 'info')
     return redirect(url_for('main.login'))
-# Rota para configurar o banco de dados (apenas para uso inicial)
-
-@bp.route('/setup-database/a-very-long-and-random-secret-key-12345')
-def setup_database():
-    try:
-        # Comando 1: Criar todas as tabelas
-        db.create_all()
-
-        # Comando 2: Criar o usuário admin, mas só se ele não existir
-        admin_existente = Aluno.query.filter_by(matricula='admin').first()
-        if not admin_existente:
-            senha_hashed = generate_password_hash('senha_super_segura', method='pbkdf2:sha256')
-            usuario_admin = Aluno(
-                nome='Admin Render', 
-                cpf='111.111.111-11', 
-                data_nascimento='01/01/1990', 
-                matricula='admin', 
-                senha_hash=senha_hashed, 
-                is_admin=True
-            )
-            db.session.add(usuario_admin)
-            db.session.commit()
-            return "Banco de dados e usuário admin criados com sucesso!"
-
-        return "Banco de dados verificado. Admin já existe."
-
-    except Exception as e:
-        return f"Ocorreu um erro: {str(e)}"
-
-# ... (sua rota de logout aqui)
