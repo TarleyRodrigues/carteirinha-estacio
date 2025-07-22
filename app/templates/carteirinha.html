@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/carteirinha.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="carteirinha-container">
+    <div class="carteirinha">
+        <div class="carteirinha-header">
+            <img src="{{ url_for('static', filename='img/logo-estacio.png') }}" alt="Logo Estácio" class="logo-carteirinha">
+            <h4>Nome da Faculdade: Estácio</h4>
+        </div>
+        <div class="carteirinha-body">
+            <div class="foto-perfil">
+                <img id="aluno-foto" src="{{ aluno.foto_url or url_for('static', filename='img/placeholder-foto.png') }}" alt="Foto do Aluno">
+            </div>
+            <div class="dados-aluno">
+                <p><strong>Nome:</strong> <span id="aluno-nome">{{ aluno.nome }}</span></p>
+                <p><strong>CPF:</strong> <span id="aluno-cpf">{{ aluno.cpf }}</span></p>
+                <p><strong>Data de Nascimento:</strong> <span id="aluno-nascimento">{{ aluno.data_nascimento }}</span></p>
+                <p><strong>Matrícula:</strong> <span id="aluno-matricula">{{ aluno.matricula }}</span></p>
+                <p><strong>Validade:</strong> <span id="aluno-validade">31/12/2025</span></p>
+            </div>
+        </div>
+        <div class="carteirinha-footer">
+            <p>Válida mediante apresentação de documento de identidade com foto.</p>
+        </div>
+    </div>
+    <a href="{{ url_for('main.menu') }}" class="btn-voltar">Voltar ao Menu</a>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="menu-container">
+    <div class="header">
+        <h3>Bem-vindo(a), {{ aluno.nome.split()[0] }}!</h3>
+        <a href="{{ url_for('main.logout') }}" class="btn-logout">Sair</a>
+    </div>
+
+    <div class="menu-options">
+        <a href="{{ url_for('main.carteirinha') }}" class="menu-option">Carteirinha Estudantil</a>
+        <a href="#" class="menu-option">Meu Perfil</a>
+        <a href="#" class="menu-option">Iniciação Científica</a>
+
+        {% if aluno.is_admin %}
+        <hr>
+        <h4 class="admin-title">Área do Administrador</h4>
+        <a href="{{ url_for('main.cadastro_estudante') }}" class="menu-option admin-option">Cadastro de Estudante</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

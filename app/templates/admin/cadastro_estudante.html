@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Cadastro de Novo Estudante</h2>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }} <div class="form-group">
+            {{ form.nome.label }}
+            {{ form.nome(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.cpf.label }}
+            {{ form.cpf(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.data_nascimento.label }}
+            {{ form.data_nascimento(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.matricula.label }}
+            {{ form.matricula(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.senha.label }}
+            {{ form.senha(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.confirmar_senha.label }}
+            {{ form.confirmar_senha(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
