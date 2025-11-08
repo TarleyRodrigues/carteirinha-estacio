@@ -1,4 +1,5 @@
 from app import app
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    # debug=True faz o servidor reiniciar sozinho quando você salvar
     app.run(debug=True)

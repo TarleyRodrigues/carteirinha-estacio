@@ -1,33 +1,33 @@
-from app.routes import bp
-from app import models
+print("--- LENDO O ARQUIVO __INIT__.PY CORRETO ---")
+
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+# 1. Cria a instância do app PRIMEIRO
+app = Flask(__name__) 
 
-# Lógica para a configuração
-# Tenta pegar a DATABASE_URL do ambiente do Render, se não achar, usa o site.db local.
+# 2. Configura o app (lendo variáveis de ambiente)
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'sqlite:///../instance/site.db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'uma-chave-secreta-muito-dificil')
 
-# Tenta pegar a SECRET_KEY do ambiente, se não achar, usa a nossa chave de desenvolvimento.
-app.config['SECRET_KEY'] = os.environ.get(
-    'SECRET_KEY', 'uma-chave-secreta-muito-dificil')
+# 3. Cria a instância do DB (ligada ao app)
+db = SQLAlchemy(app) 
 
-db = SQLAlchemy(app)
+# --- SÓ AGORA QUE PODE IMPORTAR ---
+# 4. Importa os modelos e rotas (DEPOIS que 'db' e 'app' existem)
+#    Isso permite que 'models.py' e 'routes.py' façam "from app import db"
+from app import models
+from app.routes import bp 
 
-# Garante que os modelos sejam descobertos pela aplicação
+# 5. Registra as rotas no app
+app.register_blueprint(bp)
 
-# --- ADICIONE ESTAS LINHAS AQUI ---
-# Cria as tabelas do banco de dados, se não existirem
-# Isso deve vir DEPOIS de inicializar o 'db' e DEPOIS de importar os 'models'
+# 6. Cria as tabelas (para o Render e para a primeira execução local)
+#    Isso deve vir DEPOIS de importar os modelos
 with app.app_context():
     db.create_all()
-# -----------------------------------
-
-# Importa e registra o blueprint DEPOIS de inicializar o app e o db
-app.register_blueprint(bp)
